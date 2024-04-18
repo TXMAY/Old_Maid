@@ -2,9 +2,11 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "Queue.h"
+
 typedef struct Player
 {
-	int hand[14];
+	Queue hand[14];
 	Player* nextPlayer;
 }Player;
 
