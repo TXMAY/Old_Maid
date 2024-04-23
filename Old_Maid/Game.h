@@ -9,6 +9,8 @@ Player player2;
 Player player3;
 Player player4;
 
+Player players[4];
+
 int card[53] = { 0, };	// 카드를 나눠줄 때, 중복 방지를 위해 뽑은 카드를 등록하는 배열
 // 0 : 조커
 // 1 ~ 13 : 스페이드 A ~ 13
@@ -96,39 +98,45 @@ void Init()	// 기본 설정
 	player3.prevPlayer = &player2;
 	player4.prevPlayer = &player3;
 
+	// 손패 설정(4번이 14장)
 	player1.nextPlayer = &player2;
 	player2.nextPlayer = &player3;
 	player3.nextPlayer = &player4;
 	player4.nextPlayer = &player1;
-} // 손패 설정(4번이 14장)
 
-void PrintCard(int num)	// 숫자에 따른 카드 출력
-{
-	if (num == 0)
-	{
-		printf("조커 ");
-	}
-	else
-	{
-		switch ((num - 1) / 13)
-		{
-		case 0:
-			printf("♠");
-			break;
-		case 1:
-			printf("◆");
-			break;
-		case 2:
-			printf("♥");
-			break;
-		case 3:
-			printf("♣");
-			break;
-		}
-		printf("%d ", num % 13 + 1);
-	}
-	printf("\n");
+	players[0] = player1;
+	players[1] = player2;
+	players[2] = player3;
+	players[3] = player4;
 }
+
+//void PrintCard(int num)	// 숫자에 따른 카드 출력
+//{
+//	if (num == 0)
+//	{
+//		printf("조커 ");
+//	}
+//	else
+//	{
+//		switch ((num - 1) / 13)
+//		{
+//		case 0:
+//			printf("♠");
+//			break;
+//		case 1:
+//			printf("◆");
+//			break;
+//		case 2:
+//			printf("♥");
+//			break;
+//		case 3:
+//			printf("♣");
+//			break;
+//		}
+//		printf("%d ", (num - 1) % 13 + 1);
+//	}
+//	printf("\n");
+//}
 
 void PrintCards(Node* head)	// 들고 있는 카드 패 출력
 {
@@ -155,7 +163,7 @@ void PrintCards(Node* head)	// 들고 있는 카드 패 출력
 				printf("♣");
 				break;
 			}
-			printf("%d ", head->num % 13 + 1);
+			printf("%d ", (head->num - 1) % 13 + 1);
 		}
 		head = head->next;
 	}
@@ -175,6 +183,12 @@ void RemoveCard(Node** head)	// 숫자가 같은 카드 2장 또는 4장 제거
 		count[index]++;
 		current = current->next;
 	}
+
+	/*for (int i = 0; i < 14; i++)
+	{
+		printf("%d ", count[i]);
+	}
+	printf("\n");*/
 
 	current = *head;
 	while (current != NULL)
@@ -205,6 +219,12 @@ void RemoveCard(Node** head)	// 숫자가 같은 카드 2장 또는 4장 제거
 		prev = current;
 		current = current->next;
 	}
+
+	/*for (int i = 0; i < 14; i++)
+	{
+		printf("%d ", count[i]);
+	}
+	printf("\n");*/
 }
 
 int DrawCard(Node** head, int index)	// 다른 플레이어가 들고 있는 카드 뽑기(1 ~ n)
@@ -233,7 +253,7 @@ int DrawCard(Node** head, int index)	// 다른 플레이어가 들고 있는 카드 뽑기(1 ~ 
 		}
 		if (temp != NULL)
 		{
-			if(prev!=NULL)
+			if (prev != NULL)
 			{
 				prev->next = temp->next;
 			}
@@ -246,9 +266,19 @@ int DrawCard(Node** head, int index)	// 다른 플레이어가 들고 있는 카드 뽑기(1 ~ 
 
 void RemovePlayer(Player player)	// 패가 0장이 된 플레이어 게임에서 제외
 {
-	if (Length(player.hand) == 0)
+	if (Length(player.hand) == 0 && (player.prevPlayer != NULL || player.nextPlayer != NULL))
 	{
 		player.prevPlayer->nextPlayer = player.nextPlayer;
 		player.nextPlayer->prevPlayer = player.prevPlayer;
+		player.prevPlayer = NULL;
+		player.nextPlayer = NULL;
+	}
+}
+
+int GameEnd(Player player)	// 게임 종료
+{
+	if (player.prevPlayer != NULL && player.nextPlayer != NULL)
+	{
+		return (&player == player.prevPlayer) && (&player == player.nextPlayer);
 	}
 }
