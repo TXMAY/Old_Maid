@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <Windows.h>
+#include <locale.h>
 
 #include "Player.h"
 
@@ -12,19 +13,24 @@ Player player4;
 
 Player players[4];
 
-int card[53] = { 0, };	// 카드를 나눠줄 때, 중복 방지를 위해 뽑은 카드를 등록하는 배열
+int card[53] = {
+	0,
+}; // 카드를 나눠줄 때, 중복 방지를 위해 뽑은 카드를 등록하는 배열
 // 0 : 조커
 // 1 ~ 13 : 스페이드 A ~ 13
 // 14 ~ 26 : 다이아 A ~ 13
 // 27 ~ 39 : 하트 A ~ 13
 // 40 ~ 52 : 클로버 A ~ 13
 
-void Init()	// 기본 설정
+void Init() // 기본 설정
 {
-	CONSOLE_CURSOR_INFO cursor = { 0, };
+	CONSOLE_CURSOR_INFO cursor = {
+		0,
+	};
 	cursor.bVisible = FALSE;
 	cursor.dwSize = 1;
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursor);
+	setlocale(LC_CTYPE, "");
 
 	player1.hand = NULL;
 	player2.hand = NULL;
@@ -116,7 +122,7 @@ void Init()	// 기본 설정
 	players[3] = player4;
 }
 
-//void PrintCard(int num)	// 숫자에 따른 카드 출력
+// void PrintCard(int num)	// 숫자에 따른 카드 출력
 //{
 //	if (num == 0)
 //	{
@@ -142,9 +148,9 @@ void Init()	// 기본 설정
 //		printf("%d ", (num - 1) % 13 + 1);
 //	}
 //	printf("\n");
-//}
+// }
 
-void PrintCards(Node* head)	// 들고 있는 카드 패 출력(테스트 용)
+void PrintCards(Node *head) // 들고 있는 카드 패 출력(테스트 용)
 {
 	while (head != NULL)
 	{
@@ -176,12 +182,12 @@ void PrintCards(Node* head)	// 들고 있는 카드 패 출력(테스트 용)
 	printf("\n");
 }
 
-void RemoveCard(Node** head)	// 숫자가 같은 카드 2장 또는 4장 제거
+void RemoveCard(Node **head) // 숫자가 같은 카드 2장 또는 4장 제거
 {
-	int count[14] = { 0 };
+	int count[14] = {0};
 	int index = 0;
-	Node* current = *head;
-	Node* prev = NULL;
+	Node *current = *head;
+	Node *prev = NULL;
 
 	while (current != NULL)
 	{
@@ -216,7 +222,7 @@ void RemoveCard(Node** head)	// 숫자가 같은 카드 2장 또는 4장 제거
 				{
 					prev->next = current->next;
 				}
-				Node* temp = current;
+				Node *temp = current;
 				current = current->next;
 				free(temp);
 				continue;
@@ -233,10 +239,10 @@ void RemoveCard(Node** head)	// 숫자가 같은 카드 2장 또는 4장 제거
 	printf("\n");*/
 }
 
-int DrawCard(Node** head, int index)	// 다른 플레이어가 들고 있는 카드 뽑기(1 ~ n)
+int DrawCard(Node **head, int index) // 다른 플레이어가 들고 있는 카드 뽑기(1 ~ n)
 {
-	Node* temp = *head;
-	Node* prev = NULL;
+	Node *temp = *head;
+	Node *prev = NULL;
 	int num = 0;
 	int count = 1;
 
@@ -270,7 +276,7 @@ int DrawCard(Node** head, int index)	// 다른 플레이어가 들고 있는 카드 뽑기(1 ~ 
 	return num;
 }
 
-void RemovePlayer(Player player)	// 패가 0장이 된 플레이어 게임에서 제외
+void RemovePlayer(Player player) // 패가 0장이 된 플레이어 게임에서 제외
 {
 	if (Length(player.hand) == 0 && (player.prevPlayer != NULL || player.nextPlayer != NULL))
 	{
@@ -281,7 +287,7 @@ void RemovePlayer(Player player)	// 패가 0장이 된 플레이어 게임에서 제외
 	}
 }
 
-int GameEnd(Player player)	// 게임 종료
+int GameEnd(Player player) // 게임 종료
 {
 	if (player.prevPlayer != NULL && player.nextPlayer != NULL)
 	{
@@ -291,7 +297,7 @@ int GameEnd(Player player)	// 게임 종료
 
 void PrintLines()
 {
-	COORD pos = { 0, 0 };
+	COORD pos = {0, 0};
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 	for (int i = 0; i < 67; i++)
 	{
@@ -314,21 +320,22 @@ void PrintLines()
 				else if (i == 66 && j == 0) printf("└");
 				else if (i == 66 && j == 238) printf("┘");
 				else */
-				if (i == 0 || i == 21 || i == 43||i == 66) printf("─");
+				if (i == 0 || i == 21 || i == 43 || i == 66)
+					printf("─");
 			}
 		}
 	}
 	pos.X = 0;
 	pos.Y = 0;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-	printf("┌");
+	 printf("┌");
 	pos.X = 238;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-	printf("┐");
+	 printf("┐");
 	pos.Y = 66;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-	printf("┘");
+	 printf("┘");
 	pos.X = 0;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-	printf("└");
+	 printf("└");
 }

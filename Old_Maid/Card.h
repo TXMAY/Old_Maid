@@ -1,11 +1,11 @@
-ï»¿#pragma once
+#pragma once
 #include <stdio.h>
 #include <wchar.h>
 #include <locale.h>
 #include <Windows.h>
 
 #include "Player.h"
-// ì¹´ë“œ ëª¨ì–‘ì€ 2ì¹¸, ì¹´ë“œ í…Œë‘ë¦¬ëŠ” 1ì¹¸
+// Ä«µå ¸ğ¾çÀº 2Ä­, Ä«µå Å×µÎ¸®´Â 1Ä­
 
 void PrintHandCards(Player player)
 {
@@ -13,61 +13,57 @@ void PrintHandCards(Player player)
 	Node* temp = player.hand;
 	int color;
 
-	setlocale(LC_CTYPE, "");
-
-	wchar_t* shape[4] =
-	{
-		L"â™ ",
-		L"â—†",
-		L"â™¥",
-		L"â™£"
+	wchar_t* shape[4]={
+		L"¢¼",
+		L"¡ß",
+		L"¢¾",
+		L"¢À"
 	};
 	wchar_t* number[13] =
 	{
-		L"ï¼¡",
-		L"ï¼’",
-		L"ï¼“",
-		L"ï¼”",
-		L"ï¼•",
-		L"ï¼–",
-		L"ï¼—",
-		L"ï¼˜",
-		L"ï¼™",
+		L"£Á",
+		L"£²",
+		L"£³",
+		L"£´",
+		L"£µ",
+		L"£¶",
+		L"£·",
+		L"£¸",
+		L"£¹",
 		L"10",
-		L"ï¼ª",
-		L"ï¼±",
-		L"ï¼«",
+		L"£Ê",
+		L"£Ñ",
+		L"£Ë",
 
 	};
-
 
 	wchar_t* card[19] =
 	{
-		L"â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”",
-		L"â”‚ ",
-		L"",	// ëª¨ì–‘
-		L"      â”‚",
-		L"â”‚ ",
-		L"",	// ìˆ«ì
-		L"      â”‚",
-		L"â”‚         â”‚",
-		L"â”‚    ",
-		L"",	// ëª¨ì–‘
-		L"   â”‚",
-		L"â”‚         â”‚",
-		L"â”‚       ",
-		L"",	// ìˆ«ì
-		L"â”‚",
-		L"â”‚       ",
-		L"",	// ëª¨ì–‘
-		L"â”‚",
-		L"â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜"
+		L"¦£¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¤",
+		L"¦¢ ",
+		L"", // ¸ğ¾ç
+		L"      ¦¢",
+		L"¦¢ ",
+		L"", // ¼ıÀÚ
+		L"      ¦¢",
+		L"¦¢         ¦¢",
+		L"¦¢    ",
+		L"", // ¸ğ¾ç
+		L"   ¦¢",
+		L"¦¢         ¦¢",
+		L"¦¢       ",
+		L"", // ¼ıÀÚ
+		L"¦¢",
+		L"¦¢       ",
+		L"", // ¸ğ¾ç
+		L"¦¢",
+		L"¦¦¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¥"
 	};
 
-	// ì´ì¤‘ forë¬¸ìœ¼ë¡œ ì—°ì† ì¶œë ¥ í•˜ê¸°
-	// 1ì¥ : 114, 2ì¥ 108
+	// ÀÌÁß for¹®À¸·Î ¿¬¼Ó Ãâ·Â ÇÏ±â
+	// 1Àå : 114, 2Àå 108
 
-	int x = 120 - (5 * length + (length - 1 * 1)) - 1;	// ê°€ìš´ë° ì •ë ¬ì„ ìœ„í•œ ìœ„ì¹˜ ê³„ì‚°(ì¹´ë“œ í•œ ì¥ : 10, ê³µë°± : 2)
+	int x = 120 - (5 * length + (length - 1 * 1)) - 1; // °¡¿îµ¥ Á¤·ÄÀ» À§ÇÑ À§Ä¡ °è»ê(Ä«µå ÇÑ Àå : 10, °ø¹é : 2)
 	COORD pos = { x, 0 };
 
 	if (temp != NULL)
@@ -75,7 +71,7 @@ void PrintHandCards(Player player)
 		int num = temp->num;
 		for (int i = 0; i < length; i++)
 		{
-			if ((num - 1) / 13 == 1 || (num - 1) / 13 == 2)	// ìƒ‰ ì„¤ì •
+			if ((num - 1) / 13 == 1 || (num - 1) / 13 == 2) // »ö ¼³Á¤
 			{
 				color = 4;
 			}
@@ -85,7 +81,7 @@ void PrintHandCards(Player player)
 			}
 
 			pos.Y = 57;
-			if (num != 0)	// ì¹´ë“œ ì•„ìŠ¤í‚¤ ì•„íŠ¸ì— ëª¨ì–‘ê³¼ ìˆ«ì ì‚½ì…
+			if (num != 0) // Ä«µå ¾Æ½ºÅ° ¾ÆÆ®¿¡ ¸ğ¾ç°ú ¼ıÀÚ »ğÀÔ
 			{
 				card[2] = card[9] = card[16] = shape[(num - 1) / 13];
 				card[5] = card[13] = number[(num - 1) % 13];
@@ -99,12 +95,12 @@ void PrintHandCards(Player player)
 			SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 			for (int j = 0; j < 19; j++)
 			{
-				if (j == 1 || j == 4 || j == 7 || j == 8 || j == 11 || j == 12 || j == 15 || j == 18)	// ì¤„ ë°”ê¿ˆ
+				if (j == 1 || j == 4 || j == 7 || j == 8 || j == 11 || j == 12 || j == 15 || j == 18) // ÁÙ ¹Ù²Ş
 				{
 					pos.Y++;
 					SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 				}
-				if (j == 2 || j == 5 || j == 9 || j == 13 || j == 16)	// ìƒ‰ ë³€ê²½
+				if (j == 2 || j == 5 || j == 9 || j == 13 || j == 16) // »ö º¯°æ
 				{
 					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 				}
@@ -118,42 +114,42 @@ void PrintHandCards(Player player)
 			{
 				num = temp->num;
 			}
-			pos.X += 12;	// ì¹´ë“œ 1ì¥ + ê³µë°± ë§Œí¼ ì˜†ìœ¼ë¡œ ì´ë™
+			pos.X += 12; // Ä«µå 1Àå + °ø¹é ¸¸Å­ ¿·À¸·Î ÀÌµ¿
 		}
 	}
-	//printf("\n");
+	// printf("\n");
 	/*for (int i = 1; i <= 240; i++)
 	{
 		printf("%d", i % 10);
 	}*/
-	/*printf("â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”\n");
-	printf("â”‚ ");
+	/*printf("¦£¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¤\n");
+	printf("¦¢ ");
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 	printf("%C", shape[(num - 1) / 13]);
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
-	printf("      â”‚ \n");
-	printf("â”‚ ");
+	printf("      ¦¢ \n");
+	printf("¦¢ ");
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 	printf("%S", number[(num - 1) % 13]);
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
-	printf("      â”‚\n");
-	printf("â”‚         â”‚\n");
-	printf("â”‚    ");
+	printf("      ¦¢\n");
+	printf("¦¢         ¦¢\n");
+	printf("¦¢    ");
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 	printf("%C", shape[(num - 1) / 13]);
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
-	printf("   â”‚\n");
-	printf("â”‚         â”‚\n");
-	printf("â”‚       ");
+	printf("   ¦¢\n");
+	printf("¦¢         ¦¢\n");
+	printf("¦¢       ");
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 	printf("%S", number[(num - 1) % 13]);
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
-	printf("â”‚\n");
-	printf("â”‚       ");
+	printf("¦¢\n");
+	printf("¦¢       ");
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 	printf("%C", shape[(num - 1) / 13]);
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
-	printf("â”‚\n");
-	printf("â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜");*/
-	//printf("%d %d\n", length, x);
+	printf("¦¢\n");
+	printf("¦¦¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¥");*/
+	// printf("%d %d\n", length, x);
 }
