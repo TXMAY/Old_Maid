@@ -1,6 +1,7 @@
 #pragma once
 #include <stdlib.h>
 #include <time.h>
+#include <Windows.h>
 
 #include "Player.h"
 
@@ -20,6 +21,11 @@ int card[53] = { 0, };	// 카드를 나눠줄 때, 중복 방지를 위해 뽑은 카드를 등록하�
 
 void Init()	// 기본 설정
 {
+	CONSOLE_CURSOR_INFO cursor = { 0, };
+	cursor.bVisible = FALSE;
+	cursor.dwSize = 1;
+	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursor);
+
 	player1.hand = NULL;
 	player2.hand = NULL;
 	player3.hand = NULL;
@@ -138,7 +144,7 @@ void Init()	// 기본 설정
 //	printf("\n");
 //}
 
-void PrintCards(Node* head)	// 들고 있는 카드 패 출력
+void PrintCards(Node* head)	// 들고 있는 카드 패 출력(테스트 용)
 {
 	while (head != NULL)
 	{
@@ -281,4 +287,48 @@ int GameEnd(Player player)	// 게임 종료
 	{
 		return (&player == player.prevPlayer) && (&player == player.nextPlayer);
 	}
+}
+
+void PrintLines()
+{
+	COORD pos = { 0, 0 };
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+	for (int i = 0; i < 67; i++)
+	{
+		pos.Y = i;
+		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+		if (i != 0 && i != 21 && i != 43 && i != 66)
+		{
+			printf("│");
+			pos.X = 238;
+			SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+			printf("│");
+			pos.X = 0;
+		}
+		else
+		{
+			for (int j = 0; j < 239; j++)
+			{
+				/*if (i == 0 && j == 0) printf("┌");
+				else if (i == 0 && j == 238) printf("┐");
+				else if (i == 66 && j == 0) printf("└");
+				else if (i == 66 && j == 238) printf("┘");
+				else */
+				if (i == 0 || i == 21 || i == 43||i == 66) printf("─");
+			}
+		}
+	}
+	pos.X = 0;
+	pos.Y = 0;
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+	printf("┌");
+	pos.X = 238;
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+	printf("┐");
+	pos.Y = 66;
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+	printf("┘");
+	pos.X = 0;
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+	printf("└");
 }

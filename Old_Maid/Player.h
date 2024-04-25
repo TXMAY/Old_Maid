@@ -58,7 +58,7 @@ void InsertRandom(Node** head, int num)	// 랜덤한 위치에 노드 추가
 	}
 }
 
-typedef struct Player	// 연결 리스트를 손패로 사용하는 플레이어 구조체 생성
+typedef struct Player	// 연결 리스트를 손패로 사용하는 플레이어 구조체 생성(nextPlayer 없애기(순서는 배열에 넣고 사용할 예정)
 {
 	Node* hand;	// 들고 있는 카드(패)
 	struct Player* prevPlayer;	// 내가 카드를 뽑을 플레이어

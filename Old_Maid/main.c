@@ -23,10 +23,9 @@ int main(void)
 	RemovePlayer(player3);
 	RemovePlayer(player4);
 
-	PrintHandCards(player1, 1);
-
 	while (1)
 	{
+		printf("\n");
 		printf("player 1 : ");
 		PrintCards(player1.hand);
 		printf("player 2 : ");
@@ -35,6 +34,9 @@ int main(void)
 		PrintCards(player3.hand);
 		printf("player 4 : ");
 		PrintCards(player4.hand);
+
+		PrintLines();
+		PrintHandCards(player1);
 
 		scanf_s("%d", &index);
 
@@ -69,6 +71,7 @@ int main(void)
 			RemoveCard(&player4.hand);
 			RemovePlayer(player4);
 		}
+		system("cls");
 	}
 
 
