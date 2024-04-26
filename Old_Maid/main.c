@@ -10,6 +10,12 @@ int main(void)
 	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, 0);
 	system("mode con:cols=240 lines=67");
 
+	// 마우스 입력 방지
+	HANDLE hInput = GetStdHandle(STD_INPUT_HANDLE);
+	DWORD prevMode = GetConsoleMode(hInput, &prevMode);
+
+	SetConsoleMode(hInput, prevMode & ~ENABLE_QUICK_EDIT_MODE | ENABLE_EXTENDED_FLAGS);
+
 	int index, length;
 	Init();
 
@@ -25,7 +31,7 @@ int main(void)
 
 	while (1)
 	{
-		printf("\n");
+		/*printf("\n");
 		printf("player 1 : ");
 		PrintCards(player1.hand);
 		printf("player 2 : ");
@@ -33,10 +39,20 @@ int main(void)
 		printf("player 3 : ");
 		PrintCards(player3.hand);
 		printf("player 4 : ");
-		PrintCards(player4.hand);
+		PrintCards(player4.hand);*/
 
 		PrintLines();
 		PrintHandCards(player1);
+		PrintBackCards(player2,16,8);
+		PrintBackCards(player3,86,8);
+		PrintBackCards(player4,156,8);
+
+		MoveCursor(20, 6);
+		printf("name test");
+		MoveCursor(100, 39);
+		printf("info test");
+
+		PrintPointer(player1, 2);
 
 		scanf_s("%d", &index);
 

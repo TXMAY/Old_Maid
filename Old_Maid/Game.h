@@ -5,6 +5,7 @@
 #include <locale.h>
 
 #include "Player.h"
+#include "Common.h"
 
 Player player1;
 Player player2;
@@ -13,9 +14,7 @@ Player player4;
 
 Player players[4];
 
-int card[53] = {
-	0,
-}; // 카드를 나눠줄 때, 중복 방지를 위해 뽑은 카드를 등록하는 배열
+int card[53] = { 0, }; // 카드를 나눠줄 때, 중복 방지를 위해 뽑은 카드를 등록하는 배열
 // 0 : 조커
 // 1 ~ 13 : 스페이드 A ~ 13
 // 14 ~ 26 : 다이아 A ~ 13
@@ -36,6 +35,10 @@ void Init() // 기본 설정
 	player2.hand = NULL;
 	player3.hand = NULL;
 	player4.hand = NULL;
+
+	player2.name = "Player2";
+	player3.name = "Player3";
+	player4.name = "Player4";
 
 	srand(time(NULL));
 
@@ -150,7 +153,7 @@ void Init() // 기본 설정
 //	printf("\n");
 // }
 
-void PrintCards(Node *head) // 들고 있는 카드 패 출력(테스트 용)
+void PrintCards(Node* head) // 들고 있는 카드 패 출력(테스트 용)
 {
 	while (head != NULL)
 	{
@@ -182,12 +185,12 @@ void PrintCards(Node *head) // 들고 있는 카드 패 출력(테스트 용)
 	printf("\n");
 }
 
-void RemoveCard(Node **head) // 숫자가 같은 카드 2장 또는 4장 제거
+void RemoveCard(Node** head) // 숫자가 같은 카드 2장 또는 4장 제거
 {
-	int count[14] = {0};
+	int count[14] = { 0 };
 	int index = 0;
-	Node *current = *head;
-	Node *prev = NULL;
+	Node* current = *head;
+	Node* prev = NULL;
 
 	while (current != NULL)
 	{
@@ -222,7 +225,7 @@ void RemoveCard(Node **head) // 숫자가 같은 카드 2장 또는 4장 제거
 				{
 					prev->next = current->next;
 				}
-				Node *temp = current;
+				Node* temp = current;
 				current = current->next;
 				free(temp);
 				continue;
@@ -239,10 +242,10 @@ void RemoveCard(Node **head) // 숫자가 같은 카드 2장 또는 4장 제거
 	printf("\n");*/
 }
 
-int DrawCard(Node **head, int index) // 다른 플레이어가 들고 있는 카드 뽑기(1 ~ n)
+int DrawCard(Node** head, int index) // 다른 플레이어가 들고 있는 카드 뽑기(1 ~ n)
 {
-	Node *temp = *head;
-	Node *prev = NULL;
+	Node* temp = *head;
+	Node* prev = NULL;
 	int num = 0;
 	int count = 1;
 
@@ -295,47 +298,78 @@ int GameEnd(Player player) // 게임 종료
 	}
 }
 
-void PrintLines()
+void PrintLines()	// 선 출력(x : 14 ~ 224, y : 4 ~ 62)
 {
-	COORD pos = {0, 0};
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-	for (int i = 0; i < 67; i++)
+	int divide = 2;
+	//MoveCursor(14, 5);
+	for (int i = 4; i < 63; i++)
 	{
-		pos.Y = i;
-		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-		if (i != 0 && i != 21 && i != 43 && i != 66)
+		MoveCursor(14, i);
+		if (i != 4 && /*i != 7 &&*/ i != 37 && i != 52 && i != 62)
 		{
 			printf("│");
-			pos.X = 238;
-			SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+			if (i < 38)
+			{
+				MoveCursor(84, i);
+				printf("│");
+				MoveCursor(154, i);
+				printf("│");
+			}
+			MoveCursor(224, i);
 			printf("│");
-			pos.X = 0;
 		}
 		else
 		{
-			for (int j = 0; j < 239; j++)
+			for (int j = 14; j < 225; j++)
 			{
 				/*if (i == 0 && j == 0) printf("┌");
 				else if (i == 0 && j == 238) printf("┐");
 				else if (i == 66 && j == 0) printf("└");
 				else if (i == 66 && j == 238) printf("┘");
 				else */
-				if (i == 0 || i == 21 || i == 43 || i == 66)
-					printf("─");
+				if (i == 4 || /*i == 7 ||*/ i == 37 || i == 52 || i == 62)
+				{
+					if (j == 14) printf("├");
+					else if (j == 224) printf("┤");
+					//else if (i == 7 && (j == 84 || j == 154)) printf("┼");
+					else printf("─");
+				}
 			}
 		}
 	}
-	pos.X = 0;
-	pos.Y = 0;
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-	 printf("┌");
-	pos.X = 238;
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-	 printf("┐");
-	pos.Y = 66;
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-	 printf("┘");
-	pos.X = 0;
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-	 printf("└");
+	MoveCursor(14, 4);
+	printf("┌");
+	MoveCursor(224, 4);
+	printf("┐");
+	MoveCursor(224, 62);
+	printf("┘");
+	MoveCursor(14, 62);
+	printf("└");
+	MoveCursor(84, 4);
+	printf("┬");
+	MoveCursor(154, 4);
+	printf("┬");
+	MoveCursor(84, 37);
+	printf("┴");
+	MoveCursor(154, 37);
+	printf("┴");
 }
+// 높이 : 67
+// 상단 선 : 1
+// 개행 : 1
+// 상대 플레이어 이름 : 1
+// 개행 : 1
+// 상대 카드 영역(최대치) : 9 * 3 = 27
+// 중간 선 : 1
+// 카드 선택 안내 메세지 : 1
+// 개행 : 1
+// 카드 선택 창(예상) : 11
+// 중간 선 : 1
+// 플레이어 이름 : 1
+// 개행 : 1
+// 플레이어 카드 영역 : 9
+// 하단 선 : 1
+// 총 62
+
+// 길이 : 240/실제 필요 공간 188(카드 영역 : 60, 선 : 2 * 4 = 8 (세로선이 한칸처럼 보이지만 두칸 사용함)
+// 3등분 : 80
