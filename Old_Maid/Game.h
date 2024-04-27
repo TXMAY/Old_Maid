@@ -4,15 +4,18 @@
 #include <Windows.h>
 #include <locale.h>
 
+#include <conio.h>
+
 #include "Player.h"
 #include "Common.h"
+#include "Card.h"
 
 Player player1;
 Player player2;
 Player player3;
 Player player4;
 
-Player players[4];
+Player* players[4];
 
 int card[53] = { 0, }; // 카드를 나눠줄 때, 중복 방지를 위해 뽑은 카드를 등록하는 배열
 // 0 : 조커
@@ -32,10 +35,11 @@ void Init() // 기본 설정
 	setlocale(LC_CTYPE, "");
 
 	player1.hand = NULL;
-	player2.hand = NULL;
-	player3.hand = NULL;
-	player4.hand = NULL;
+	player2.hand= NULL;
+	player3.hand= NULL;
+	player4.hand= NULL;
 
+	player1.name = "Player1";
 	player2.name = "Player2";
 	player3.name = "Player3";
 	player4.name = "Player4";
@@ -108,21 +112,12 @@ void Init() // 기본 설정
 	}
 
 	// 내가 카드를 뽑아올 플레이어 설정 (뽑는 순서는 1 -> 2 -> 3 -> 4 -> 1...)
-	player1.prevPlayer = &player4;
-	player2.prevPlayer = &player1;
-	player3.prevPlayer = &player2;
-	player4.prevPlayer = &player3;
+	player1.drawPlayer = &player4;
+	player2.drawPlayer = &player1;
+	player3.drawPlayer = &player2;
+	player4.drawPlayer = &player3;
 
 	// 손패 설정(4번이 14장)
-	player1.nextPlayer = &player2;
-	player2.nextPlayer = &player3;
-	player3.nextPlayer = &player4;
-	player4.nextPlayer = &player1;
-
-	players[0] = player1;
-	players[1] = player2;
-	players[2] = player3;
-	players[3] = player4;
 }
 
 // void PrintCard(int num)	// 숫자에 따른 카드 출력
@@ -155,6 +150,7 @@ void Init() // 기본 설정
 
 void PrintCards(Node* head) // 들고 있는 카드 패 출력(테스트 용)
 {
+	//head = head->next;
 	while (head != NULL)
 	{
 		if (head->num == 0)
@@ -185,7 +181,7 @@ void PrintCards(Node* head) // 들고 있는 카드 패 출력(테스트 용)
 	printf("\n");
 }
 
-void RemoveCard(Node** head) // 숫자가 같은 카드 2장 또는 4장 제거
+void RemoveCard(Node** head) // 숫자가 같은 카드 2장 또는 4장 제거 (현재 문제 발생 추정 장소, 노드 삭제 후 연결 잘 되는지 확인)
 {
 	int count[14] = { 0 };
 	int index = 0;
@@ -199,23 +195,17 @@ void RemoveCard(Node** head) // 숫자가 같은 카드 2장 또는 4장 제거
 		current = current->next;
 	}
 
-	/*for (int i = 0; i < 14; i++)
-	{
-		printf("%d ", count[i]);
-	}
-	printf("\n");*/
-
 	current = *head;
 	while (current != NULL)
 	{
 		index = (current->num - 1) % 13 + 1;
-		if (count[index] == 2 || count[index] == 3)
+		if (count[index] > 1)
 		{
-			if (count[index] == 3)
+			if (count[index] ==3)
 			{
 				count[index]--;
 			}
-			else
+			else 
 			{
 				if (prev == NULL)
 				{
@@ -234,12 +224,6 @@ void RemoveCard(Node** head) // 숫자가 같은 카드 2장 또는 4장 제거
 		prev = current;
 		current = current->next;
 	}
-
-	/*for (int i = 0; i < 14; i++)
-	{
-		printf("%d ", count[i]);
-	}
-	printf("\n");*/
 }
 
 int DrawCard(Node** head, int index) // 다른 플레이어가 들고 있는 카드 뽑기(1 ~ n)
@@ -251,11 +235,12 @@ int DrawCard(Node** head, int index) // 다른 플레이어가 들고 있는 카드 뽑기(1 ~ 
 
 	if (index == 1)
 	{
-		if (temp != NULL)
+		Node* toDelete = *head;
+		if (toDelete != NULL)
 		{
-			*head = temp->next;
-			num = temp->num;
-			free(temp);
+			*head = toDelete->next;
+			num = toDelete->num;
+			free(toDelete);
 		}
 	}
 	else
@@ -281,21 +266,15 @@ int DrawCard(Node** head, int index) // 다른 플레이어가 들고 있는 카드 뽑기(1 ~ 
 
 void RemovePlayer(Player player) // 패가 0장이 된 플레이어 게임에서 제외
 {
-	if (Length(player.hand) == 0 && (player.prevPlayer != NULL || player.nextPlayer != NULL))
+	if (Length(player.drawPlayer->hand) == 0)
 	{
-		player.prevPlayer->nextPlayer = player.nextPlayer;
-		player.nextPlayer->prevPlayer = player.prevPlayer;
-		player.prevPlayer = NULL;
-		player.nextPlayer = NULL;
+		player.drawPlayer = player.drawPlayer->drawPlayer;
 	}
 }
 
 int GameEnd(Player player) // 게임 종료
 {
-	if (player.prevPlayer != NULL && player.nextPlayer != NULL)
-	{
-		return (&player == player.prevPlayer) && (&player == player.nextPlayer);
-	}
+	return &player == player.drawPlayer;
 }
 
 void PrintLines()	// 선 출력(x : 14 ~ 224, y : 4 ~ 62)
@@ -353,6 +332,163 @@ void PrintLines()	// 선 출력(x : 14 ~ 224, y : 4 ~ 62)
 	printf("┴");
 	MoveCursor(154, 37);
 	printf("┴");
+}
+
+void PlayeGame()
+{
+	int index, length, i = 0;
+	Init();
+
+	players[0] = &player1;
+	players[1] = &player2;
+	players[2] = &player3;
+	players[3] = &player4;
+
+	RemoveCard(&player1.hand);
+	RemoveCard(&player2.hand);
+	RemoveCard(&player3.hand);
+	RemoveCard(&player4.hand);
+
+	RemovePlayer(player1);
+	RemovePlayer(player2);
+	RemovePlayer(player3);
+	RemovePlayer(player4);
+
+	while (1)
+	{
+		MoveCursor(0, 0);
+		printf("current Player : %s\n",players[i]->name);
+		/*printf("player 1 : ");
+		PrintCards(player1.hand);*/
+		printf("player 2 : ");
+		PrintCards(player2.hand);
+		printf("player 3 : ");
+		PrintCards(player3.hand);
+		printf("player 4 : ");
+		PrintCards(player4.hand);
+
+		PrintLines();
+		PrintHandCards(player1);
+		PrintBackCards(player2, 16, 8);
+		PrintBackCards(player3, 86, 8);
+		PrintBackCards(player4, 156, 8);
+
+		MoveCursor(20, 6);
+		printf("name test");
+		MoveCursor(100, 39);
+		printf("info test");
+
+		PrintPointer(player1, 0);
+
+		//if (i == 0) scanf_s("%d", &index);
+		if (i == 0) index = 1;
+		index = 1;
+		//Sleep(1000);
+		_getch();
+
+		if (i == 0)
+		{
+			InsertRandom(&players[i]->hand, DrawCard(&players[i]->drawPlayer->hand, index));
+		}
+		else
+		{
+			length = rand() % Length(players[i]->drawPlayer->hand) + 1;
+			InsertRandom(&players[i]->hand, DrawCard(&players[i]->drawPlayer->hand, length));
+		}
+		RemoveCard(&players[i]->hand);
+		RemovePlayer(*players[i]);
+		/*switch (i)
+		{
+		case 0:
+			InsertRandom(player1.hand, DrawCard(player1.drawPlayer->hand, index));
+			RemoveCard(player1.hand);
+			RemovePlayer(player1);
+			break;
+		case 1:
+			length = rand() % Length(player2.drawPlayer->hand) + 1;
+			InsertRandom(player2.hand, DrawCard(player2.drawPlayer->hand, length));
+			RemoveCard(player2.hand);
+			RemovePlayer(player2);
+			break;
+		case 2:
+			length = rand() % Length(player3.drawPlayer->hand) + 1;
+			InsertRandom(player2.hand, DrawCard(player3.drawPlayer->hand, length));
+			RemoveCard(player3.hand);
+			RemovePlayer(player3);
+			break;
+		case 3:
+			length = rand() % Length(player3.drawPlayer->hand) + 1;
+			InsertRandom(player3.hand, DrawCard(player3.drawPlayer->hand, length));
+			RemoveCard(player3.hand);
+			RemovePlayer(player3);
+			break;
+		}*/
+		/*if (Length(players[i].hand) != 0)
+		{
+			InsertRandom(&players[i].hand, DrawCard(&players[i].drawPlayer->hand, index));
+			RemoveCard(&players[i].hand);
+			RemovePlayer(players[i]);
+		}
+		else
+		{
+			length = rand() % Length(players[i].drawPlayer->hand) + 1;
+			InsertRandom(&players[i].hand, DrawCard(&players[i].drawPlayer->hand, length));
+			RemoveCard(&players[i].hand);
+			RemovePlayer(players[i]);
+		}*/
+
+		i++;
+		if (i > 3) i = 0;
+
+		/*if (Length(player1.hand) != 0)
+		{
+			//PrintCard(DrawCard(&player1.drawPlayer->hand, index));
+			InsertRandom(&player1.hand, DrawCard(&player1.drawPlayer->hand, index));
+			RemoveCard(&player1.hand);
+			//RemovePlayer(&player1);
+			if (Length(player1.hand) == 0)
+			{
+				player2.drawPlayer = player1.drawPlayer;
+			}
+		}
+		if (Length(player2.hand) != 0)
+		{
+			length = rand() % Length(player2.drawPlayer->hand) + 1;
+			//PrintCard(DrawCard(&player2.drawPlayer->hand, length));
+			InsertRandom(&player2.hand, DrawCard(&player2.drawPlayer->hand, length));
+			RemoveCard(&player2.hand);
+			//RemovePlayer(&player2);
+			if (Length(player2.hand) == 0)
+			{
+				player3.drawPlayer = player2.drawPlayer;
+			}
+		}
+		if (Length(player3.hand) != 0)
+		{
+			length = rand() % Length(player3.drawPlayer->hand) + 1;
+			//PrintCard(DrawCard(&player3.drawPlayer->hand, length));
+			InsertRandom(&player3.hand, DrawCard(&player3.drawPlayer->hand, length));
+			RemoveCard(&player3.hand);
+			//RemovePlayer(&player3);
+			if (Length(player3.hand) == 0)
+			{
+				player4.drawPlayer = player3.drawPlayer;
+			}
+		}
+		if (Length(player4.hand) != 0)
+		{
+			length = rand() % Length(player4.drawPlayer->hand) + 1;
+			//PrintCard(DrawCard(&player4.drawPlayer->hand, length));
+			InsertRandom(&player4.hand, DrawCard(&player4.drawPlayer->hand, length));
+			RemoveCard(&player4.hand);
+			//RemovePlayer(&player4);
+			if (Length(player4.hand) == 0)
+			{
+				player1.drawPlayer = player4.drawPlayer;
+			}
+		}*/
+		system("cls");
+	}
 }
 // 높이 : 67
 // 상단 선 : 1

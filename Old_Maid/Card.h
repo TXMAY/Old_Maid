@@ -163,7 +163,7 @@ void PrintHandCards(Player player)
 void PrintBackCards(Player player, int x, int y)
 {
 	int length = Length(player.hand);
-	Node* temp = player.hand;
+	Node* temp = &player.hand;
 	int tmp = x;
 	char* card[9] =
 	{

@@ -19,23 +19,38 @@ Node* Create(int num)	// 노드 생성
 
 void Insert(Node** head, int num)	// 노드 추가
 {
-	Node* newNode = Create(num);
+	/*Node* newNode = Create(num);
 	newNode->next = *head;
-	*head = newNode;
+	*head = newNode;*/
+
+	Node* newNode = Create(num);
+	//newNode->next = NULL;
+	if (*head == NULL)
+	{
+		*head = newNode;
+		return;
+	}
+		Node* temp = *head;
+		while (temp->next!=NULL)
+		{
+			temp = temp->next;
+		}
+		temp->next = newNode;
 }
 
 int Length(Node* head)	// 연결 리스트의 길이 구하기
 {
 	int length = 0;
-	while (head != NULL)
+	Node* current = head;
+	while (current != NULL)
 	{
 		length++;
-		head = head->next;
+		current = current->next;
 	}
 	return length;
 }
 
-void InsertRandom(Node** head, int num)	// 랜덤한 위치에 노드 추가
+void InsertRandom(Node** head, int num)	// 랜덤한 위치에 노드 추가 (현재 문제 발생 추정 장소, 노드 제대로 연결 되는지 확인)
 {
 	int length = Length(*head);
 	int position = rand() % (length + 1);
@@ -62,6 +77,5 @@ typedef struct Player	// 연결 리스트를 손패로 사용하는 플레이어 구조체 생성(next
 {
 	Node* hand;	// 들고 있는 카드(패)
 	char* name;	// 플레이어 이름
-	struct Player* prevPlayer;	// 내가 카드를 뽑을 플레이어
-	struct Player* nextPlayer;	// 다음 플레이어
+	struct Player* drawPlayer;	// 내가 카드를 뽑을 플레이어
 }Player;
