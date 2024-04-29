@@ -6,15 +6,6 @@
 
 int main(void)
 {
-	// 굴림체, 16pt 기준으로 240x67
-	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, 0);
-	system("mode con:cols=240 lines=67");
-
-	// 마우스 입력 방지
-	HANDLE hInput = GetStdHandle(STD_INPUT_HANDLE);
-	DWORD prevMode = GetConsoleMode(hInput, &prevMode);
-
-	SetConsoleMode(hInput, prevMode & ~ENABLE_QUICK_EDIT_MODE | ENABLE_EXTENDED_FLAGS);
 
 	/*int index, length, i = 0;
 	Init();
