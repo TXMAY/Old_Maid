@@ -6,80 +6,31 @@
 
 int main(void)
 {
+	// 전체화면 설정
+	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, 0);
+	system("mode con:cols=240 lines=67");
 
-	/*int index, length, i = 0;
-	Init();
+	// 마우스 입력 방지
+	HANDLE hInput = GetStdHandle(STD_INPUT_HANDLE);
+	DWORD prevMode = GetConsoleMode(hInput, &prevMode);
 
-	RemoveCard(&player1.hand);
-	RemoveCard(&player2.hand);
-	RemoveCard(&player3.hand);
-	RemoveCard(&player4.hand);
+	SetConsoleMode(hInput, prevMode & ~ENABLE_QUICK_EDIT_MODE | ENABLE_EXTENDED_FLAGS);
 
-	RemovePlayer(player1);
-	RemovePlayer(player2);
-	RemovePlayer(player3);
-	RemovePlayer(player4);
+	// 커서 숨기기
+	CONSOLE_CURSOR_INFO cursor = {
+		0,
+	};
+	cursor.dwSize = 1;
+	cursor.bVisible = FALSE;
+	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursor);
 
+	// 유니코드를 출력하기 위한 지역 설정
+	setlocale(LC_CTYPE, ""); // 컴퓨터 시스템 지역으로 설정
+
+	PrintMain();
 	while (1)
 	{
-		PrintLines();
-		PrintHandCards(player1);
-		PrintBackCards(player2,16,8);
-		PrintBackCards(player3,86,8);
-		PrintBackCards(player4,156,8);
-
-		MoveCursor(20, 6);
-		printf("name test");
-		MoveCursor(100, 39);
-		printf("info test");
-
-		PrintPointer(player1, 2);
-
-		if (i == 0) scanf_s("%d", &index);
-
-		if(Length(players[i].hand)!=0)
-		{
-			InsertRandom(players[i].hand, DrawCard(players[i].drawPlayer->hand, index));
-			RemoveCard(players[i].hand);
-			RemovePlayer(players[i]);
-		}
-
-		i++;
-		if (i > 3) i = 0;
-
-		if (Length(player1.hand) != 0)
-		{
-			//PrintCard(DrawCard(&player1.drawPlayer->hand, index));
-			InsertRandom(&player1.hand, DrawCard(&player1.drawPlayer->hand, index));
-			RemoveCard(&player1.hand);
-			RemovePlayer(player1);
-		}
-		if (Length(player2.hand) != 0)
-		{
-			length = rand() % Length(player2.drawPlayer->hand) + 1;
-			//PrintCard(DrawCard(&player2.drawPlayer->hand, length));
-			InsertRandom(&player2.hand, DrawCard(&player2.drawPlayer->hand, length));
-			RemoveCard(&player2.hand);
-			RemovePlayer(player2);
-		}
-		if (Length(player3.hand) != 0)
-		{
-			length = rand() % Length(player3.drawPlayer->hand) + 1;
-			//PrintCard(DrawCard(&player3.drawPlayer->hand, length));
-			InsertRandom(&player3.hand, DrawCard(&player3.drawPlayer->hand, length));
-			RemoveCard(&player3.hand);
-			RemovePlayer(player3);
-		}
-		if (Length(player4.hand) != 0)
-		{
-			length = rand() % Length(player4.drawPlayer->hand) + 1;
-			//PrintCard(DrawCard(&player4.drawPlayer->hand, length));
-			InsertRandom(&player4.hand, DrawCard(&player4.drawPlayer->hand, length));
-			RemoveCard(&player4.hand);
-			RemovePlayer(player4);
-		}
-		system("cls");
-	}*/
-	PlayeGame();
+		PlayGame();
+	}
 	return 0;
 }

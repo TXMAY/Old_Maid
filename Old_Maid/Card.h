@@ -7,15 +7,13 @@
 #include "Player.h"
 #include "Common.h"
 
-#define CARD_Y 53 
-
 void PrintHandCards(Player player)	// 손패 출력(앞면)
 {
 	int length = Length(player.hand);
 	Node* temp = player.hand;
 	int color;
 
-	wchar_t* shape[4] = {
+	wchar_t* shape[4] = {	// 유니코드를 저장하기 위해 wchar_t 사용
 		L"♠",
 		L"◆",
 		L"♥",
@@ -62,7 +60,7 @@ void PrintHandCards(Player player)	// 손패 출력(앞면)
 		L"└─────────┘"
 	};
 
-	int x = (240 - (10 * length + ((length - 1) * 4))) / 2 - 1, y = CARD_Y; // 가운데 정렬을 위한 위치 계산(카드 : 10, 공백 : 4)
+	int x = (240 - (10 * length + ((length - 1) * 4))) / 2 - 1, y = 53; // 가운데 정렬을 위한 위치 계산(카드 : 10, 공백 : 4)
 	// ((전체 길이 - ((카드 길이 * 카드 장수) + (공백 * 공백 수))) / 2 - 1
 	COORD pos = { x, y };
 
@@ -85,7 +83,7 @@ void PrintHandCards(Player player)	// 손패 출력(앞면)
 				card[2] = card[9] = card[16] = shape[(num - 1) / 13];
 				card[5] = card[13] = number[(num - 1) % 13];
 			}
-			else
+			else	// 조커
 			{
 				card[2] = card[9] = card[16] = L":P";
 				card[5] = card[13] = L"  ";
@@ -103,9 +101,10 @@ void PrintHandCards(Player player)	// 손패 출력(앞면)
 				{
 					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 				}
-				printf("%S", card[j]);
+				printf("%S", card[j]);	// 출력
 				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 			}
+			printf("\n");
 
 			temp = temp->next;
 
@@ -115,9 +114,8 @@ void PrintHandCards(Player player)	// 손패 출력(앞면)
 			}
 
 			x += 14;	// 카드 1장 + 공백 만큼 옆으로 이동
-			y = CARD_Y;	// 카드 1장만큼 아래로 이동
+			y = 53;	// 원래 위치로 이동
 		}
-
 	}
 }
 
@@ -125,30 +123,6 @@ void PrintDrawHandCards(Player player)	// 내가 뽑을 손패 출력(뒷면)
 {
 	int length = Length(player.hand);
 	Node* temp = player.hand;
-
-	wchar_t* shape[4] = {
-		L"♠",
-		L"◆",
-		L"♥",
-		L"♣"
-	};
-	wchar_t* number[13] =
-	{
-		L"Ａ",
-		L"２",
-		L"３",
-		L"４",
-		L"５",
-		L"６",
-		L"７",
-		L"８",
-		L"９",
-		L"10",
-		L"Ｊ",
-		L"Ｑ",
-		L"Ｋ",
-
-	};
 
 	char* card[9] =
 	{
@@ -172,19 +146,16 @@ void PrintDrawHandCards(Player player)	// 내가 뽑을 손패 출력(뒷면)
 		for (int j = 0; j < 9; j++)
 		{
 			MoveCursor(x, y++);
-			printf("%s", card[j]);
+			printf("%s\n", card[j]);
 		}
 		x += 14;
 		y = 42;
 	}
-
-
 }
 
 void PrintBackCards(Player player, int x, int y)	// 손패 출력(뒷면)
 {
 	int length = Length(player.hand);
-	Node* temp = &player.hand;
 	int tmp = x;
 	char* card[9] =
 	{
@@ -211,7 +182,7 @@ void PrintBackCards(Player player, int x, int y)	// 손패 출력(뒷면)
 			for (int k = 0; k < 9; k++)
 			{
 				MoveCursor(x, y++);
-				printf("%s", card[k]);
+				printf("%s\n", card[k]);
 			}
 			x += 14;
 			y -= 9;
