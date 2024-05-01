@@ -520,10 +520,10 @@ void PlayGame()
 			}
 			printf("\n");
 			PrintGameScreen(i); // 가져온 후 손패 표시
-			Sleep(750);
+			Sleep(1000);
 			RemoveCard(&players[i]->hand); // 카드 제거
 			PrintGameScreen(i);			   // 제거한 후 손패 표시
-			Sleep(750);
+			Sleep(1000);
 		}
 		i++;
 		if (i > 3)
