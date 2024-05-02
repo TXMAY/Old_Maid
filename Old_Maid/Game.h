@@ -408,7 +408,7 @@ void EndGame(int win)	// 게임 종료
 		if (_kbhit())
 		{
 			key = _getch();
-			if (key == 10 || key == 13)
+			if (key == 122)
 			{
 				if (option == 0)	// 다시하기
 				{

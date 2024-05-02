@@ -19,12 +19,7 @@ Node* Create(int num)	// 노드 생성
 
 void Insert(Node** head, int num)	// 노드 추가
 {
-	/*Node* newNode = Create(num);
-	newNode->next = *head;
-	*head = newNode;*/
-
 	Node* newNode = Create(num);
-	//newNode->next = NULL;
 	if (*head == NULL)
 	{
 		*head = newNode;

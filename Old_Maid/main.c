@@ -28,9 +28,7 @@ int main(void)
 	SetConsoleMode(hInput, prevMode & ~ENABLE_QUICK_EDIT_MODE | ENABLE_EXTENDED_FLAGS);
 
 	// Ä¿¼­ ¼û±â±â
-	CONSOLE_CURSOR_INFO cursor = {
-		0,
-	};
+	CONSOLE_CURSOR_INFO cursor = { 0, };
 	cursor.dwSize = 1;
 	cursor.bVisible = FALSE;
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursor);
