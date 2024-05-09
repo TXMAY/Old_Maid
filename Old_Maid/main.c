@@ -8,7 +8,7 @@ int main(void)
 {
 	// 전체화면 설정(함수가 32비트(x86)전용이라 디버깅 모드를 x86으로 설정해야 함)
 	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, 0);
-	system("mode con:cols=240 lines=67");
+	system("mode con:cols=237 lines=67");
 
 	// 폰트 및 폰트 크기 설정
 	COORD fontSize = { 8, 16 };	// 폰트 폭 및 너비(굴림체 16pt 기준)
